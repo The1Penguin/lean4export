@@ -38,13 +38,13 @@ partial def Level.toJson : Level -> Json
     have : ToJson Level := ⟨Level.toJson⟩
     json% { "imax" : [$n,$m] }
   | .param name   => json% { "param" : $name }
-  | .mvar LMVarId => json% { mvar : $LMVarId.name }
+  | .mvar LMVarId => json% { "lmVarId" : $LMVarId.name }
 instance : ToJson Level := ⟨Level.toJson⟩
 
 partial def Expr.toJson : Expr -> Json
   | .bvar (deBruijnIndex : Nat) => json% { "bVar" : { "index" : $deBruijnIndex } }
-  | .fvar (fvarId : FVarId) => json% { "fVar" : { "id" : $fvarId }}
-  | .mvar (mvarId : MVarId) => json% { "mVar" : { "id" : $mvarId }}
+  | .fvar (fvarId : FVarId) => json% { "fVar" : { "id" : $fvarId.name }}
+  | .mvar (mvarId : MVarId) => json% { "mVar" : { "id" : $mvarId.name }}
   | .sort (u : Level) => json% { "sort" : { "level" : $u }}
   | .const (declName : Name) (us : List Level) => json% { "const" : {"declName" : $declName, "levels" : $us }}
   | .app (fn : Expr) (arg : Expr) =>
@@ -75,8 +75,8 @@ instance : ToJson DefinitionVal := ⟨λ s => json% { "name" : $s.name, "type" :
 instance : ToJson TheoremVal := ⟨λ s => json% { "name" : $s.name, "type" : $s.type, "val" : $s.value}⟩
 instance : ToJson OpaqueVal := ⟨λ s => json% { "name" : $s.name, "type" : $s.type, "val" : $s.value}⟩
 instance : ToJson QuotVal := ⟨λ s => json% { "name" : $s.name, "type" : $s.type, "kind" : $s.kind}⟩
-instance : ToJson InductiveVal := ⟨λ s => json% { "name" : $s.name, "type" : $s.type, "numParams" : $s.numParams, "ctors" : $s.ctors}⟩
-instance : ToJson ConstructorVal := ⟨λ s => json% { "name" : $s.name, "type" : $s.type, "induct" : $s.induct}⟩
+instance : ToJson InductiveVal := ⟨λ s => json% { "name" : $s.name, "type" : $s.type, "ctors" : $s.ctors}⟩
+instance : ToJson ConstructorVal := ⟨λ s => json% { "name" : $s.name, "type" : $s.type}⟩
 instance : ToJson RecursorVal := ⟨λ s => json% { "name" : $s.name, "type" : $s.type}⟩
 
 instance : ToJson (Name × ConstantInfo) where
